@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import scipy
 import scipy.io as sio
 import random
-import pandas as pd
 import sklearn.metrics as metrics
 import csv
 
@@ -70,6 +69,37 @@ if __name__ =="__main__":
     pred_labels_valid4 = np.array(l4)
     print("Validation accuracy: {0}".format(metrics.accuracy_score(labels_valid, pred_labels_valid4)))
     print("Validation on Regularization")
+
+
+    Reg = 50
+    dnew = 10
+    Regid = Reg * np.eye(dnew)
+    Vnew = Vh[0:dnew,:].T
+    Unew = U[:,0:dnew]
+    print(Vnew.shape)
+    print(Unew.shape)
+    for i in range(10000):
+        Unew = np.linalg.solve((Vnew.T.dot(Vnew)+Regid), X_zero.dot(Vnew).T)
+        Unew = Unew.T
+        Vnew = np.linalg.solve((Unew.T.dot(Unew)+Regid), X_zero.T.dot(Unew).T)
+        Vnew = Vnew.T
+    print(Unew.shape)
+    print(Vnew.shape)
+    Rnew = Unew.dot(np.dot(S[0:dnew,0:dnew],Vnew.T))
+    lnew = []
+    for row in validation_index:
+        lnew.append(Rnew[row[0], row[1]] > 0)
+    pred_labels_validnew = np.array(lnew)
+    print("Validation accuracy: {0}".format(metrics.accuracy_score(labels_valid, pred_labels_validnew)))
+    print("Validation on Regularization")
+
+    #print(Unew.shape)
+    
+
+ #   for i in range(n):
+ #       for j in range(d):
+  #          if(not np.isnan(X_train[i,j])):
+  #             Unew = (Vh.dot(Vh.T)+Regid)
 
 '''
     R1r =
